@@ -572,6 +572,16 @@ function addStream() {
     $('#addstream').modal('hide');
 }
 
+function youtubeDL() {
+    if($('#streamurl').val().length > 0) {
+        socket.send('MPD_API_YOUTUBE_DL,'+$('#streamurl').val());
+    }
+    $('#addstream').modal('hide');
+    $('.top-right').notify({
+        message:{text:"Launching youtube-dl..."}
+    }).show();
+}
+
 function confirmSettings() {
     if($('#mpd_pw').val().length + $('#mpd_pw_con').val().length > 0) {
         if ($('#mpd_pw').val() !== $('#mpd_pw_con').val())

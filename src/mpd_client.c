@@ -143,6 +143,28 @@ out_browse:
 out_add_track:
             free(p_charbuf);
             break;
+        case MPD_API_YOUTUBE_DL:
+            p_charbuf = strdup(c->content);
+            if(strcmp(strtok(p_charbuf, ","), "MPD_API_YOUTUBE_DL"))
+                goto out_youtube_dl;
+
+            if((token = strtok(NULL, ",")) == NULL)
+                goto out_youtube_dl;
+
+			char *passed_args[] = {"/home/c3h/.local/bin/youtube-dl",
+				"--extract-audio", "--no-part", "--no-continue", "--output",
+				"/media/1TB/Music/youtube/%(title)s-%(id)s.%(ext)s", "--exec",
+				"mpc -w update youtube && mpc add youtube/\"$(basename {})\"",
+				token, NULL};
+			int pid = fork();
+			if (pid == 0) {
+				/* Child */
+				execv(passed_args[0], passed_args);
+			}
+
+out_youtube_dl:
+            free(p_charbuf);
+            break;
         case MPD_API_ADD_PLAY_TRACK:
             p_charbuf = strdup(c->content);
             if(strcmp(strtok(p_charbuf, ","), "MPD_API_ADD_PLAY_TRACK"))
